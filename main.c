@@ -68,7 +68,7 @@ int contains(unsigned char element, unsigned char list[], int listSize) {
 int main(int argc, char *argv[]) {
     FILE *debugFile = fopen("C:\\Users\\Clement\\Documents\\coding\\ImageOfCLife\\debug.txt", "w+");
     int imgWidth, imgHeight, channels;
-    unsigned char *img = stbi_load("C:\\Users\\Clement\\Documents\\coding\\ImageOfCLife\\fractal1.jpg", &imgWidth,
+    unsigned char *img = stbi_load("C:\\Users\\Clement\\Documents\\coding\\ImageOfCLife\\face.jpg", &imgWidth,
                                    &imgHeight, &channels, 0);
     fprintf(debugFile, "Loaded image with a width of %dpx, a imgHeight of %dpx and %d channels\n", imgWidth, imgHeight,
             channels);
@@ -119,7 +119,7 @@ int main(int argc, char *argv[]) {
     //refresh(imgHeight, width, stateMatrix1, (SDL_Color **) stateMatrix2);
     //The window we'll be rendering to
     SDL_Window *window = NULL;
-
+    SDL_Event event;
     //The surface contained by the window
     //4SDL_Surface *screenSurface = NULL;
     SDL_DisplayMode DM;
@@ -130,8 +130,8 @@ int main(int argc, char *argv[]) {
         //Create window
         SDL_GetCurrentDisplayMode(0, &DM);
         int windowHeight, windowWidth;
-        float heightRelation = (float) imgHeight / (.9f * (float) DM.h - 4.f);
-        float widthRelation = (float) imgWidth / (.9f * (float) DM.w - 4.f);
+        float heightRelation = (float) imgHeight / (float) DM.h;
+        float widthRelation = (float) imgWidth /  (float) DM.w ;
         if (max(widthRelation, heightRelation) > 1) {
             fprintf(debugFile, "image is to big, resize not implemented yet\n");
             exit(5);
@@ -140,17 +140,12 @@ int main(int argc, char *argv[]) {
         xOffset = 2;
 
         if (heightRelation < widthRelation) {
-            windowWidth = (int) (.9f * (float) DM.w);
-            windowHeight = (int) ceilf((float) imgHeight / widthRelation);
             rectangleSize = (int) (1.f / widthRelation);
-            windowHeight += max(0, 4 - (windowHeight % rectangleSize));
         } else {
-            windowHeight = (int) (.9f * (float) DM.h);
-            windowWidth = (int) ceilf((float) imgWidth / heightRelation);
             rectangleSize = (int) (1.f / heightRelation);
-            windowWidth += max(0, 4 - (windowWidth % rectangleSize));
-
         }
+        windowHeight  = rectangleSize * imgHeight;
+        windowWidth  = rectangleSize * imgWidth;
 
         window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windowWidth,
                                   windowHeight, SDL_WINDOW_SHOWN);
@@ -204,7 +199,7 @@ int main(int argc, char *argv[]) {
     SDL_RenderPresent(renderer);*/
     renderMatrix(stateMatrix1, imgHeight, imgWidth, renderer);
     SDL_PumpEvents();
-    SDL_Delay(8000);
+    SDL_Delay(1000);
     char title[30];
     for(int i = 0; i < ITERATION_COUNT; ++i){
         if(i%2){
@@ -215,13 +210,21 @@ int main(int argc, char *argv[]) {
             renderMatrix(stateMatrix1, imgHeight, imgWidth, renderer);
         }
         SDL_Delay(MILLIS_DELAY);
-        SDL_PumpEvents();
+        SDL_PollEvent(&event);
+        if (event.type == SDL_WINDOWEVENT) {
+            if (event.window.event == SDL_WINDOWEVENT_CLOSE) {
+                goto exit_label;
+            }
+
+        }
         sprintf(title, "frame : %i", i+1);
         SDL_SetWindowTitle(window, title);
+
 
     }
 
     SDL_Delay(3000);
+    exit_label:
     SDL_DestroyWindow(window);
     SDL_Quit();
 

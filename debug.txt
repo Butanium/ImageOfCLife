@@ -1,1 +1,1 @@
-Loaded image with a width of 500px, a imgHeight of 500px and 3 channels
+Loaded image with a width of 20px, a imgHeight of 20px and 3 channels
