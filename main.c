@@ -24,11 +24,11 @@ struct nbInfo {
     char nbAliveNeighbours;
 };
 
-const int ITERATION_COUNT = 500;
-const int MILLIS_DELAY = 1000/60;
+const int ITERATION_COUNT = 500000;
+const int MILLIS_DELAY = 0*1000/60;
 unsigned char deathColor[3] = {0, 0, 0};
 unsigned char lifeColor[3];
-double tolerance = 30;
+double tolerance = 100;
 unsigned char deathRules[] = {1, 4, 5, 6, 7};
 unsigned char birthRules[] = {3};
 unsigned char dRulesLen, bRulesLen;
@@ -68,7 +68,7 @@ int contains(unsigned char element, unsigned char list[], int listSize) {
 int main(int argc, char *argv[]) {
     FILE *debugFile = fopen("C:\\Users\\Clement\\Documents\\coding\\ImageOfCLife\\debug.txt", "w+");
     int imgWidth, imgHeight, channels;
-    unsigned char *img = stbi_load("C:\\Users\\Clement\\Documents\\coding\\ImageOfCLife\\face.jpg", &imgWidth,
+    unsigned char *img = stbi_load("C:\\Users\\Clement\\Documents\\coding\\ImageOfCLife\\symFractal.jpg", &imgWidth,
                                    &imgHeight, &channels, 0);
     fprintf(debugFile, "Loaded image with a width of %dpx, a imgHeight of %dpx and %d channels\n", imgWidth, imgHeight,
             channels);
